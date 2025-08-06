@@ -1,0 +1,257 @@
+{% extends 'resume_app/base.html' %}
+
+{% block title %}Career Advice - AI Resume Analyzer{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1 class="mb-2">Career Advice</h1>
+        <p class="lead">Personalized recommendations for {{ resume.title }}</p>
+    </div>
+    <div class="col-md-4 text-md-end d-flex align-items-center justify-content-md-end">
+        <div class="btn-group">
+            <a href="{% url 'resume_app:analyze_resume' resume.id %}" class="btn btn-outline-primary">
+                <i class="fas fa-chart-bar me-2"></i>Resume Analysis
+            </a>
+            <a href="{% url 'resume_app:job_match' resume.id %}" class="btn btn-outline-primary">
+                <i class="fas fa-briefcase me-2"></i>Job Matching
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Left Column - Career Paths and Advice -->
+    <div class="col-lg-8">
+        <!-- Career Paths Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-road text-primary me-2"></i>Recommended Career Paths</h4>
+                <span class="badge bg-primary">AI Generated</span>
+            </div>
+            <div class="card-body">
+                {% if career_advice.career_paths %}
+                <div class="row">
+                    {% for path in career_advice.career_paths %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ path.title }}</h5>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="me-2">Match:</div>
+                                    <div class="progress flex-grow-1" style="height: 10px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ path.match_percentage }}%;" 
+                                            aria-valuenow="{{ path.match_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <div class="ms-2">{{ path.match_percentage }}%</div>
+                                </div>
+                                <p class="card-text">{{ path.description }}</p>
+                                <h6>Key Requirements:</h6>
+                                <ul class="mb-0">
+                                    {% for req in path.requirements %}
+                                    <li>{{ req }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>We need more information to provide career path recommendations. Consider adding more details to your resume.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Career Advice Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-lightbulb text-primary me-2"></i>Personalized Career Advice</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5>Strengths</h5>
+                    <ul>
+                        {% for strength in career_advice.strengths %}
+                        <li>{{ strength }}</li>
+                        {% empty %}
+                        <li class="text-muted">No specific strengths identified. Consider highlighting your achievements more clearly in your resume.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Areas for Improvement</h5>
+                    <ul>
+                        {% for area in career_advice.improvement_areas %}
+                        <li>{{ area }}</li>
+                        {% empty %}
+                        <li class="text-muted">No specific improvement areas identified.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div>
+                    <h5>Recommended Next Steps</h5>
+                    <ol>
+                        {% for step in career_advice.next_steps %}
+                        <li>{{ step }}</li>
+                        {% empty %}
+                        <li class="text-muted">No specific next steps identified.</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Column - Skills to Develop and Resources -->
+    <div class="col-lg-4">
+        <!-- Skills to Develop Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-chart-line text-primary me-2"></i>Skills to Develop</h4>
+            </div>
+            <div class="card-body">
+                {% if career_advice.skills_to_develop %}
+                <div class="list-group list-group-flush">
+                    {% for skill in career_advice.skills_to_develop %}
+                    <div class="list-group-item">
+                        <h5 class="mb-1">{{ skill.name }}</h5>
+                        <p class="mb-2">{{ skill.reason }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-primary">{{ skill.category }}</span>
+                            <small class="text-muted">Priority: {{ skill.priority }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>We need more information to recommend skills to develop. Consider adding more details to your resume.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Learning Resources Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-book text-primary me-2"></i>Learning Resources</h4>
+            </div>
+            <div class="card-body">
+                {% if career_advice.learning_resources %}
+                <div class="accordion" id="resourcesAccordion">
+                    {% for resource in career_advice.learning_resources %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" 
+                                aria-controls="collapse{{ forloop.counter }}">
+                                {{ resource.title }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" 
+                            aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#resourcesAccordion">
+                            <div class="accordion-body">
+                                <p>{{ resource.description }}</p>
+                                <a href="{{ resource.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-external-link-alt me-1"></i>Learn More
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>Learning resources will be available once we analyze your skills and career goals.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Industry Trends Card -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-industry text-primary me-2"></i>Industry Trends</h4>
+            </div>
+            <div class="card-body">
+                {% if career_advice.industry_trends %}
+                <ul class="list-group list-group-flush">
+                    {% for trend in career_advice.industry_trends %}
+                    <li class="list-group-item">
+                        <h5 class="mb-1">{{ trend.title }}</h5>
+                        <p class="mb-0">{{ trend.description }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>Industry trends will be available once we analyze your career field.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Next Steps Section -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-arrow-right text-primary me-2"></i>Next Steps</h4>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="p-3 border rounded h-100 d-flex flex-column">
+                            <div class="mb-3">
+                                <i class="fas fa-chart-bar fa-3x text-primary"></i>
+                            </div>
+                            <h5>Resume Analysis</h5>
+                            <p class="text-muted mb-3">Review your detailed resume analysis to understand your profile better.</p>
+                            <div class="mt-auto">
+                                <a href="{% url 'resume_app:analyze_resume' resume.id %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-chart-bar me-2"></i>View Analysis
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="p-3 border rounded h-100 d-flex flex-column">
+                            <div class="mb-3">
+                                <i class="fas fa-briefcase fa-3x text-success"></i>
+                            </div>
+                            <h5>Job Matching</h5>
+                            <p class="text-muted mb-3">See how well your resume matches with job descriptions.</p>
+                            <div class="mt-auto">
+                                <a href="{% url 'resume_app:job_match' resume.id %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-briefcase me-2"></i>Job Matching
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded h-100 d-flex flex-column">
+                            <div class="mb-3">
+                                <i class="fas fa-upload fa-3x text-info"></i>
+                            </div>
+                            <h5>Upload New Version</h5>
+                            <p class="text-muted mb-3">Upload an updated version of your resume for a new analysis.</p>
+                            <div class="mt-auto">
+                                <a href="{% url 'resume_app:upload_resume' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-upload me-2"></i>Upload New
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "resume_app/base.html" %}
+{% block title %}Logged Out - AI Resume Analyzer{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="fas fa-sign-out-alt me-2"></i>Logged Out</h4>
+            </div>
+            <div class="card-body text-center">
+                <p class="lead">You have been successfully logged out.</p>
+                <a href="{% url 'login' %}" class="btn btn-primary">Login Again</a>
+                <a href="{% url 'resume_app:home' %}" class="btn btn-outline-primary ms-2">Return to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

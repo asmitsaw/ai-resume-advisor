@@ -1,0 +1,313 @@
+{% extends 'resume_app/base.html' %}
+{% load resume_filters %}
+
+{% block title %}Job Matching - AI Resume Analyzer{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1 class="mb-2">Job Matching</h1>
+        <p class="lead">Match your resume against job descriptions</p>
+    </div>
+    <div class="col-md-4 text-md-end d-flex align-items-center justify-content-md-end">
+        <div class="btn-group">
+            <a href="{% url 'resume_app:analyze_resume' resume.id %}" class="btn btn-outline-primary">
+                <i class="fas fa-chart-bar me-2"></i>Resume Analysis
+            </a>
+            <a href="{% url 'resume_app:career_advice' resume.id %}" class="btn btn-outline-primary">
+                <i class="fas fa-lightbulb me-2"></i>Career Advice
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Left Column - Job Search Form -->
+    <div class="col-lg-4 mb-4 mb-lg-0">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-search text-primary me-2"></i>Job Search</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="resume_id" value="{{ resume.id }}">
+                    
+                    <div class="mb-3">
+                        <label for="id_job_title" class="form-label">Job Title</label>
+                        {{ form.job_title }}
+                        {% if form.job_title.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.job_title.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_company" class="form-label">Company (Optional)</label>
+                        {{ form.company }}
+                        {% if form.company.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.company.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="id_job_description" class="form-label">Job Description</label>
+                        {{ form.job_description }}
+                        <div class="form-text">Paste the full job description here for the best matching results.</div>
+                        {% if form.job_description.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.job_description.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-percentage me-2"></i>Calculate Match
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Resume Info Card -->
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-file-alt text-primary me-2"></i>Resume Info</h4>
+            </div>
+            <div class="card-body">
+                <h5>{{ resume.title }}</h5>
+                <p class="text-muted mb-3">{{ resume.filename }}</p>
+                
+                <h6 class="mb-2">Top Skills</h6>
+                <div class="mb-3">
+                    {% for skill in top_skills %}
+                    <span class="badge bg-primary me-2 mb-2">{{ skill }}</span>
+                    {% empty %}
+                    <p class="text-muted">No skills detected</p>
+                    {% endfor %}
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'resume_app:analyze_resume' resume.id %}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-chart-bar me-2"></i>View Full Analysis
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Column - Match Results -->
+    <div class="col-lg-8">
+        {% if job_match %}
+        <!-- Match Score Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-percentage text-primary me-2"></i>Match Score</h4>
+                <span class="badge bg-primary">AI Generated</span>
+            </div>
+            <div class="card-body text-center py-4">
+                <div class="row align-items-center">
+                    <div class="col-md-6 mb-4 mb-md-0">
+                        <div class="position-relative" style="width: 200px; height: 200px; margin: 0 auto;">
+                            <div class="position-absolute top-50 start-50 translate-middle text-center">
+                                <h1 class="display-3 mb-0">{{ job_match.match_percentage }}%</h1>
+                                <p class="mb-0">Match Score</p>
+                            </div>
+                            <svg width="200" height="200" viewBox="0 0 200 200">
+                                <circle cx="100" cy="100" r="90" fill="none" stroke="#e9ecef" stroke-width="15"/>
+                                <circle cx="100" cy="100" r="90" fill="none" stroke="#0d6efd" stroke-width="15"
+                                        stroke-dasharray="565.48" stroke-dashoffset="{{ 565.48|add:'-565.48'|add:job_match.match_percentage|floatformat:2|mul:5.6548 }}"
+                                        transform="rotate(-90 100 100)"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-md-start">
+                        <h4>{{ job_match.job_title }}</h4>
+                        {% if job_match.company %}
+                        <p class="text-muted mb-3">{{ job_match.company }}</p>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <h6>Match Level:</h6>
+                            {% if job_match.match_percentage >= 80 %}
+                            <div class="alert alert-success mb-0">
+                                <i class="fas fa-check-circle me-2"></i><strong>Excellent Match!</strong> Your resume is highly aligned with this job.
+                            </div>
+                            {% elif job_match.match_percentage >= 60 %}
+                            <div class="alert alert-primary mb-0">
+                                <i class="fas fa-thumbs-up me-2"></i><strong>Good Match!</strong> Your resume matches many of the job requirements.
+                            </div>
+                            {% elif job_match.match_percentage >= 40 %}
+                            <div class="alert alert-warning mb-0">
+                                <i class="fas fa-exclamation-triangle me-2"></i><strong>Moderate Match.</strong> Consider tailoring your resume for this role.
+                            </div>
+                            {% else %}
+                            <div class="alert alert-danger mb-0">
+                                <i class="fas fa-times-circle me-2"></i><strong>Low Match.</strong> This job may not align well with your current resume.
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mt-3">
+                            <a href="{% url 'resume_app:job_match_detail' job_match.id %}" class="btn btn-primary">
+                                <i class="fas fa-search-plus me-2"></i>View Detailed Analysis
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Skills Match Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-code text-primary me-2"></i>Skills Match</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <h5 class="mb-3">Matching Skills</h5>
+                        <ul class="list-group">
+                            {% for skill in job_match.matching_skills %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ skill.name }}
+                                <span class="badge bg-success rounded-pill">Match</span>
+                            </li>
+                            {% empty %}
+                            <li class="list-group-item text-muted">No matching skills found</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="mb-3">Missing Skills</h5>
+                        <ul class="list-group">
+                            {% for skill in job_match.missing_skills %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ skill.name }}
+                                <span class="badge bg-danger rounded-pill">Missing</span>
+                            </li>
+                            {% empty %}
+                            <li class="list-group-item text-muted">No missing skills found</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recommendations Card -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-lightbulb text-primary me-2"></i>Recommendations</h4>
+            </div>
+            <div class="card-body">
+                <h5 class="mb-3">How to Improve Your Match</h5>
+                <ul>
+                    {% for recommendation in job_match.recommendations %}
+                    <li class="mb-2">{{ recommendation }}</li>
+                    {% empty %}
+                    <li class="text-muted">No specific recommendations available</li>
+                    {% endfor %}
+                </ul>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>Remember to tailor your resume for each job application. Highlight relevant skills and experiences that match the job description.
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- No Match Results Yet -->
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-percentage fa-5x text-muted"></i>
+                </div>
+                <h3>No Job Match Results Yet</h3>
+                <p class="text-muted mb-4">Enter a job title and description to see how well your resume matches the requirements.</p>
+                <p>Our AI will analyze your resume against the job description and provide:</p>
+                <div class="row mt-4">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="p-3 border rounded">
+                            <i class="fas fa-percentage fa-2x text-primary mb-3"></i>
+                            <h5>Match Score</h5>
+                            <p class="text-muted mb-0">Overall compatibility percentage</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="p-3 border rounded">
+                            <i class="fas fa-code fa-2x text-primary mb-3"></i>
+                            <h5>Skills Analysis</h5>
+                            <p class="text-muted mb-0">Matching and missing skills</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded">
+                            <i class="fas fa-lightbulb fa-2x text-primary mb-3"></i>
+                            <h5>Recommendations</h5>
+                            <p class="text-muted mb-0">Tips to improve your match</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Job Search History -->
+{% if job_match_history %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-history text-primary me-2"></i>Previous Job Matches</h4>
+                <span class="badge bg-secondary">{{ job_match_history|length }}</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Company</th>
+                                <th>Match Score</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for match in job_match_history %}
+                            <tr>
+                                <td>{{ match.job_title }}</td>
+                                <td>{{ match.company|default:"N/A" }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                            <div class="progress-bar {% if match.match_percentage >= 70 %}bg-success{% elif match.match_percentage >= 40 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                                role="progressbar" style="width: {{ match.match_percentage }}%;" 
+                                                aria-valuenow="{{ match.match_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span>{{ match.match_percentage }}%</span>
+                                    </div>
+                                </td>
+                                <td>{{ match.created_at|date:"M d, Y" }}</td>
+                                <td>
+                                    <a href="{% url 'resume_app:job_match_detail' match.id %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

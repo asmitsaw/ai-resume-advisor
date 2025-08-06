@@ -1,0 +1,196 @@
+{% extends 'resume_app/base.html' %}
+
+{% block title %}AI Resume Analyzer & Career Advisor - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 text-center">
+    <div class="row py-lg-5">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <h1 class="fw-bold">AI Resume Analyzer & Career Advisor</h1>
+            <p class="lead text-muted">
+                Optimize your career journey with AI-powered resume analysis and personalized career advice.
+                Upload your resume, get instant feedback, and discover your perfect career path.
+            </p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+                {% if user.is_authenticated %}
+                <a href="{% url 'resume_app:upload_resume' %}" class="btn btn-primary btn-lg px-4 gap-3">
+                    <i class="fas fa-upload me-2"></i>Upload Resume
+                </a>
+                <a href="{% url 'resume_app:dashboard' %}" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-4 gap-3">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                </a>
+                <a href="{% url 'register' %}" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="fas fa-user-plus me-2"></i>Register
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Key Features</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
+                        <h3 class="card-title h5">Resume Analysis</h3>
+                        <p class="card-text">Our AI analyzes your resume to extract skills, experience, and education, providing a comprehensive overview of your professional profile.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-lightbulb fa-3x text-primary mb-3"></i>
+                        <h3 class="card-title h5">Career Advice</h3>
+                        <p class="card-text">Receive personalized career advice based on your resume, including strengths, areas for improvement, and recommended skills to learn.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-briefcase fa-3x text-primary mb-3"></i>
+                        <h3 class="card-title h5">Job Matching</h3>
+                        <p class="card-text">Match your resume with job descriptions to see how well you fit and identify skills you need to improve for better job opportunities.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row">
+            <div class="col-md-3 text-center">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 100px; height: 100px;">
+                    <i class="fas fa-upload fa-3x"></i>
+                </div>
+                <h4>1. Upload Resume</h4>
+                <p>Upload your resume in PDF, DOCX, or TXT format.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 100px; height: 100px;">
+                    <i class="fas fa-robot fa-3x"></i>
+                </div>
+                <h4>2. AI Analysis</h4>
+                <p>Our AI analyzes your resume to extract key information.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 100px; height: 100px;">
+                    <i class="fas fa-chart-bar fa-3x"></i>
+                </div>
+                <h4>3. Get Insights</h4>
+                <p>Receive detailed analysis and personalized career advice.</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 100px; height: 100px;">
+                    <i class="fas fa-check-circle fa-3x"></i>
+                </div>
+                <h4>4. Improve & Apply</h4>
+                <p>Use insights to improve your resume and apply for jobs with confidence.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">What Our Users Say</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center mb-3">
+                            <span class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </span>
+                        </div>
+                        <p class="card-text text-center">"The AI Resume Analyzer helped me identify gaps in my resume that I never noticed before. After implementing the suggestions, I landed my dream job!"</p>
+                        <div class="text-center mt-3">
+                            <h5 class="card-title mb-0">Sarah Johnson</h5>
+                            <small class="text-muted">Software Developer</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center mb-3">
+                            <span class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </span>
+                        </div>
+                        <p class="card-text text-center">"The career advice was spot on! It helped me pivot my career in a direction that better aligns with my skills and interests. Highly recommended!"</p>
+                        <div class="text-center mt-3">
+                            <h5 class="card-title mb-0">Michael Chen</h5>
+                            <small class="text-muted">Data Scientist</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center mb-3">
+                            <span class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </span>
+                        </div>
+                        <p class="card-text text-center">"The job matching feature is incredible! It helped me focus my job search on positions where I had the highest chance of success. Worth every penny!"</p>
+                        <div class="text-center mt-3">
+                            <h5 class="card-title mb-0">Emily Rodriguez</h5>
+                            <small class="text-muted">Marketing Manager</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 text-center">
+    <div class="container">
+        <h2 class="mb-4">Ready to Boost Your Career?</h2>
+        <p class="lead mb-4">Join thousands of professionals who have improved their career prospects with our AI-powered tools.</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            {% if user.is_authenticated %}
+            <a href="{% url 'resume_app:upload_resume' %}" class="btn btn-primary btn-lg px-4 gap-3">
+                <i class="fas fa-upload me-2"></i>Upload Your Resume
+            </a>
+            {% else %}
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg px-4 gap-3">
+                <i class="fas fa-user-plus me-2"></i>Get Started
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,219 @@
+{% extends 'resume_app/base.html' %}
+
+{% block title %}Resume Analysis - AI Resume Analyzer{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1 class="mb-2">Resume Analysis</h1>
+        <p class="lead">{{ resume.title }}</p>
+    </div>
+    <div class="col-md-4 text-md-end d-flex align-items-center justify-content-md-end">
+        <div class="btn-group">
+            <a href="{% url 'resume_app:career_advice' resume.id %}" class="btn btn-primary">
+                <i class="fas fa-lightbulb me-2"></i>Get Career Advice
+            </a>
+            <a href="{% url 'resume_app:job_match' resume.id %}" class="btn btn-outline-primary">
+                <i class="fas fa-briefcase me-2"></i>Job Matching
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Left Column - Summary and Skills -->
+    <div class="col-lg-8">
+        <!-- Summary Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-file-alt text-primary me-2"></i>Resume Summary</h4>
+                <span class="badge bg-primary">AI Generated</span>
+            </div>
+            <div class="card-body">
+                <pre class="bg-light p-3 rounded">{{ analysis.summary|linebreaks }}</pre>
+            </div>
+        </div>
+        
+        <!-- Skills Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-code text-primary me-2"></i>Skills Analysis</h4>
+            </div>
+            <div class="card-body">
+                <h5 class="mb-3">Top Skills</h5>
+                <div class="mb-4">
+                    {% for skill in analysis.skills.top_skills %}
+                    <span class="badge bg-primary me-2 mb-2 p-2">{{ skill }}</span>
+                    {% empty %}
+                    <p class="text-muted">No skills detected. Consider adding more specific skills to your resume.</p>
+                    {% endfor %}
+                </div>
+                
+                <h5 class="mb-3">Skill Distribution</h5>
+                <div class="row">
+                    {% for skill, count in analysis.skills.skill_counts.items %}
+                    <div class="col-md-6 mb-2">
+                        <div class="d-flex justify-content-between">
+                            <span>{{ skill }}</span>
+                            <span class="text-muted">{{ count }}</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar" role="progressbar" style="width: {{ count }}0%;" aria-valuenow="{{ count }}" aria-valuemin="0" aria-valuemax="10"></div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <p class="text-muted">No skill distribution data available.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Column - Experience and Education -->
+    <div class="col-lg-4">
+        <!-- Experience Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-briefcase text-primary me-2"></i>Experience</h4>
+            </div>
+            <div class="card-body">
+                {% if analysis.experience.organizations %}
+                <h5 class="mb-3">Organizations</h5>
+                <ul class="list-group list-group-flush mb-4">
+                    {% for org in analysis.experience.organizations %}
+                    <li class="list-group-item">{{ org }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                
+                {% if analysis.experience.possible_job_titles %}
+                <h5 class="mb-3">Detected Roles</h5>
+                <ul class="list-group list-group-flush mb-4">
+                    {% for title in analysis.experience.possible_job_titles %}
+                    <li class="list-group-item">{{ title }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                
+                {% if analysis.experience.dates %}
+                <h5 class="mb-3">Timeframes</h5>
+                <ul class="list-group list-group-flush">
+                    {% for date in analysis.experience.dates %}
+                    <li class="list-group-item">{{ date }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                
+                {% if not analysis.experience.organizations and not analysis.experience.possible_job_titles and not analysis.experience.dates %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>No experience information detected. Consider adding more detailed work experience to your resume.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Education Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-graduation-cap text-primary me-2"></i>Education</h4>
+            </div>
+            <div class="card-body">
+                {% if analysis.education.institutions %}
+                <h5 class="mb-3">Institutions</h5>
+                <ul class="list-group list-group-flush">
+                    {% for institution in analysis.education.institutions %}
+                    <li class="list-group-item">{{ institution }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>No education information detected. Consider adding your educational background to your resume.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Resume Info Card -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-info-circle text-primary me-2"></i>Resume Info</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Filename</span>
+                        <span class="text-muted">{{ resume.filename }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Uploaded</span>
+                        <span class="text-muted">{{ resume.uploaded_at|date:"M d, Y" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Analyzed</span>
+                        <span class="text-muted">{{ analysis.analyzed_at|date:"M d, Y" }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Next Steps Section -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0"><i class="fas fa-arrow-right text-primary me-2"></i>Next Steps</h4>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="p-3 border rounded h-100 d-flex flex-column">
+                            <div class="mb-3">
+                                <i class="fas fa-lightbulb fa-3x text-warning"></i>
+                            </div>
+                            <h5>Get Career Advice</h5>
+                            <p class="text-muted mb-3">Receive personalized career recommendations based on your resume.</p>
+                            <div class="mt-auto">
+                                <a href="{% url 'resume_app:career_advice' resume.id %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-lightbulb me-2"></i>Career Advice
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="p-3 border rounded h-100 d-flex flex-column">
+                            <div class="mb-3">
+                                <i class="fas fa-briefcase fa-3x text-success"></i>
+                            </div>
+                            <h5>Match with Jobs</h5>
+                            <p class="text-muted mb-3">See how well your resume matches with job descriptions.</p>
+                            <div class="mt-auto">
+                                <a href="{% url 'resume_app:job_match' resume.id %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-briefcase me-2"></i>Job Matching
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded h-100 d-flex flex-column">
+                            <div class="mb-3">
+                                <i class="fas fa-upload fa-3x text-info"></i>
+                            </div>
+                            <h5>Upload New Version</h5>
+                            <p class="text-muted mb-3">Upload an updated version of your resume for a new analysis.</p>
+                            <div class="mt-auto">
+                                <a href="{% url 'resume_app:upload_resume' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-upload me-2"></i>Upload New
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

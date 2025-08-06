@@ -1,0 +1,173 @@
+{% extends 'resume_app/base.html' %}
+
+{% block title %}Dashboard - AI Resume Analyzer{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1 class="mb-3">Your Dashboard</h1>
+        <p class="lead">Manage your resumes and view analysis results.</p>
+    </div>
+    <div class="col-md-4 text-md-end d-flex align-items-center justify-content-md-end">
+        <a href="{% url 'resume_app:upload_resume' %}" class="btn btn-primary">
+            <i class="fas fa-upload me-2"></i>Upload New Resume
+        </a>
+    </div>
+</div>
+
+{% if resumes %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Your Resumes</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Uploaded</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for resume in resumes %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-file-alt text-primary me-2"></i>
+                                        <div>
+                                            <h6 class="mb-0">{{ resume.title }}</h6>
+                                            <small class="text-muted">{{ resume.filename }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ resume.uploaded_at|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if resume.analysis %}
+                                    <span class="badge bg-success">Analyzed</span>
+                                    {% else %}
+                                    <span class="badge bg-warning text-dark">Not Analyzed</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        {% if resume.analysis %}
+                                        <a href="{% url 'resume_app:analyze_resume' resume.id %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-chart-bar me-1"></i>View Analysis
+                                        </a>
+                                        {% else %}
+                                        <a href="{% url 'resume_app:analyze_resume' resume.id %}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-robot me-1"></i>Analyze
+                                        </a>
+                                        {% endif %}
+                                        <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+                                            <span class="visually-hidden">Toggle Dropdown</span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            {% if resume.analysis %}
+                                            <li>
+                                                <a class="dropdown-item" href="{% url 'resume_app:career_advice' resume.id %}">
+                                                    <i class="fas fa-lightbulb me-2"></i>Career Advice
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="{% url 'resume_app:job_match' resume.id %}">
+                                                    <i class="fas fa-briefcase me-2"></i>Job Matching
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            {% endif %}
+                                            <li>
+                                                <a class="dropdown-item text-danger" href="#" onclick="confirmDelete({{ resume.id }})">
+                                                    <i class="fas fa-trash-alt me-2"></i>Delete
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resume Stats -->
+<div class="row mt-4">
+    <div class="col-md-4 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <div class="display-4 text-primary mb-2">{{ resumes.count }}</div>
+                <h5 class="card-title">Total Resumes</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <div class="display-4 text-success mb-2">{{ analyzed_resumes_count }}</div>
+                <h5 class="card-title">Analyzed Resumes</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center">
+                <div class="display-4 text-info mb-2">{{ user.date_joined|date:"M Y" }}</div>
+                <h5 class="card-title">Member Since</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="text-center py-5">
+    <div class="mb-4">
+        <i class="fas fa-file-upload fa-5x text-muted"></i>
+    </div>
+    <h3>No Resumes Yet</h3>
+    <p class="text-muted mb-4">Upload your first resume to get started with AI analysis and career advice.</p>
+    <a href="{% url 'resume_app:upload_resume' %}" class="btn btn-primary btn-lg">
+        <i class="fas fa-upload me-2"></i>Upload Resume
+    </a>
+</div>
+{% endif %}
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this resume? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="#" id="confirmDeleteBtn" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function confirmDelete(resumeId) {
+        // Set the delete URL
+        document.getElementById('confirmDeleteBtn').href = `/delete-resume/${resumeId}/`;
+        // Show the modal
+        var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        deleteModal.show();
+    }
+</script>
+{% endblock %}

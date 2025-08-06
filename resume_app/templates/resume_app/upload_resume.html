@@ -1,0 +1,132 @@
+{% extends 'resume_app/base.html' %}
+
+{% block title %}Upload Resume - AI Resume Analyzer{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h3 class="mb-0">Upload Your Resume</h3>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">
+                    Upload your resume to get AI-powered analysis, career advice, and job matching recommendations.
+                    We support PDF, DOCX, DOC, and TXT formats.
+                </p>
+                
+                <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_title" class="form-label">Resume Title</label>
+                        {{ form.title }}
+                        <div class="form-text">Give your resume a descriptive name (e.g., "Software Developer Resume 2023")</div>
+                        {% if form.title.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.title.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="id_file" class="form-label">Resume File</label>
+                        <div class="input-group">
+                            {{ form.file }}
+                        </div>
+                        <div class="form-text">Maximum file size: 5MB. Supported formats: PDF, DOCX, DOC, TXT</div>
+                        {% if form.file.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.file.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-2"></i>Upload Resume
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4 shadow-sm">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">Resume Tips</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-check-circle text-success me-2"></i>Do</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-angle-right me-2 text-primary"></i>Use clear, concise language</li>
+                            <li><i class="fas fa-angle-right me-2 text-primary"></i>Include relevant skills and keywords</li>
+                            <li><i class="fas fa-angle-right me-2 text-primary"></i>Quantify achievements with numbers</li>
+                            <li><i class="fas fa-angle-right me-2 text-primary"></i>Tailor your resume for specific jobs</li>
+                            <li><i class="fas fa-angle-right me-2 text-primary"></i>Proofread for errors</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-times-circle text-danger me-2"></i>Don't</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-angle-right me-2 text-primary"></i>Include personal information</li>
+                            <li><i class="fas fa-angle-right me-2 text-primary"></i>Use generic objectives</li>
+                            <li><i class="fas fa-angle-right me-2 text-primary"></i>Include irrelevant experience</li>
+                            <li><i class="fas fa-angle-right me-2 text-primary"></i>Use complex formatting</li>
+                            <li><i class="fas fa-angle-right me-2 text-primary"></i>Exceed 2 pages</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h4 class="mb-0">What You'll Get</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-robot text-primary me-3 fa-2x"></i>
+                        <div>
+                            <h5 class="mb-1">AI Resume Analysis</h5>
+                            <p class="mb-0 text-muted">Detailed breakdown of your skills, experience, and education</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-lightbulb text-warning me-3 fa-2x"></i>
+                        <div>
+                            <h5 class="mb-1">Career Advice</h5>
+                            <p class="mb-0 text-muted">Personalized recommendations for career growth</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-briefcase text-success me-3 fa-2x"></i>
+                        <div>
+                            <h5 class="mb-1">Job Matching</h5>
+                            <p class="mb-0 text-muted">See how well your resume matches job descriptions</p>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                        <i class="fas fa-chart-line text-info me-3 fa-2x"></i>
+                        <div>
+                            <h5 class="mb-1">Skill Gap Analysis</h5>
+                            <p class="mb-0 text-muted">Identify skills to learn for better job opportunities</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5><i class="fas fa-shield-alt text-primary me-2"></i>Privacy Guarantee</h5>
+                <p class="text-muted">Your resume data is kept private and secure. We do not share your information with third parties.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
