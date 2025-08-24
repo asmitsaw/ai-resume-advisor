@@ -1,139 +1,81 @@
-# AI Resume Advisor
+# AI-RESUME-ADVISOR
 
-An intelligent Django web application that analyzes resumes and provides personalized career advice and job matching recommendations.
+**Empowering Careers with AI-Driven Resume Success**
 
-## Features
+![last commit today](https://img.shields.io/badge/last%20commit-today-brightgreen)
+![html 61.4%](https://img.shields.io/badge/html-61.4%25-blue)
+![languages 4](https://img.shields.io/badge/languages-4-orange)
 
-- **Resume Analysis**: Upload and analyze resumes using AI-powered text processing
-- **Career Advice**: Get personalized career recommendations based on resume content
-- **Job Matching**: Find relevant job opportunities that match your skills and experience
-- **User Authentication**: Secure login and registration system
-- **Dashboard**: Comprehensive dashboard to track your resume analysis history
-- **Modern UI**: Clean and responsive user interface
+Built with the tools and technologies:
+![Markdown](https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 
-## Technology Stack
+## Table of Contents
 
-- **Backend**: Django 4.x
-- **Frontend**: HTML, CSS, JavaScript
-- **Database**: SQLite (development), PostgreSQL (production ready)
-- **AI/ML**: Natural Language Processing for resume analysis
-- **Deployment**: Nginx configuration included
+- [Overview](#overview)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Testing](#testing)
 
-## Prerequisites
+## Overview
 
-- Python 3.8 or higher
-- pip (Python package installer)
-- Git
+AI Resume Advisor is a comprehensive web application that harnesses AI and NLP to facilitate resume analysis, personalized career guidance, and targeted job matching. Built on a robust Django framework, it offers a seamless experience for users to upload resumes, receive tailored insights, and explore relevant opportunities.
 
-## Installation
+### Why ai-resume-advisor?
 
-1. **Clone the repository**
+- **Resume Analysis:** Utilizes NLP for skill extraction from various document formats
+- **Personalized Career Guidance:** Provides tailored recommendations based on resume insights
+- **Job Matching:** Connects resumes with job descriptions, highlighting alignment
+- **Modular Architecture:** Built with Django for scalability and maintainability
+- **Custom Templating & Admin Tools:** Enhances UI and backend management
+
+## Getting Started
+
+### Prerequisites
+
+- **Programming Language:** Python
+- **Package Manager:** Pip
+
+### Installation
+
+Build ai-resume-advisor from the source and install dependencies:
+
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/ai-resume-advisor.git
+   git clone https://github.com/asmitsaw/ai-resume-advisor.git
+   ```
+
+2. **Navigate to the project directory:**
+   ```bash
    cd ai-resume-advisor
    ```
 
-2. **Create a virtual environment**
+3. **Install the dependencies:**
    ```bash
-   python -m venv venv
-   ```
-
-3. **Activate the virtual environment**
-   - Windows:
-     ```bash
-     venv\Scripts\activate
-     ```
-   - macOS/Linux:
-     ```bash
-     source venv/bin/activate
-     ```
-
-4. **Install dependencies**
-   ```bash
+   # Using pip:
    pip install -r requirements.txt
    ```
 
-5. **Run database migrations**
-   ```bash
-   python manage.py migrate
-   ```
+### Usage
 
-6. **Create a superuser (optional)**
-   ```bash
-   python manage.py createsuperuser
-   ```
+Run the project with:
 
-7. **Run the development server**
-   ```bash
-   python manage.py runserver
-   ```
-
-8. **Access the application**
-   Open your browser and go to `http://127.0.0.1:8000/`
-
-## Usage
-
-1. **Register/Login**: Create an account or log in to your existing account
-2. **Upload Resume**: Upload your resume in PDF format
-3. **Get Analysis**: View detailed analysis of your resume including skills, experience, and recommendations
-4. **Career Advice**: Receive personalized career advice based on your profile
-5. **Job Matching**: Find relevant job opportunities that match your skills
-
-## Project Structure
-
-```
-ai_resume_advisor/
-├── resume_analyzer/          # Django project settings
-├── resume_app/              # Main application
-│   ├── models.py            # Database models
-│   ├── views.py             # View logic
-│   ├── forms.py             # Form definitions
-│   ├── resume_analyzer.py   # AI analysis logic
-│   ├── templates/           # HTML templates
-│   └── static/              # CSS, JS, and images
-├── media/                   # User uploaded files
-├── static/                  # Static files
-├── nginx/                   # Nginx configuration
-├── requirements.txt         # Python dependencies
-└── manage.py               # Django management script
+```bash
+# Using pip:
+python manage.py runserver
 ```
 
-## Configuration
+### Testing
 
-### Environment Variables
+Ai-resume-advisor uses the Django test framework. Run the test suite with:
 
-Create a `.env` file in the project root with the following variables:
-
-```env
-DEBUG=True
-SECRET_KEY=your-secret-key-here
-DATABASE_URL=sqlite:///db.sqlite3
+```bash
+# Using pip:
+python manage.py test
 ```
 
-### Production Deployment
+---
 
-1. Set `DEBUG=False` in settings
-2. Configure a production database (PostgreSQL recommended)
-3. Set up static file serving
-4. Configure Nginx using the provided configuration in `nginx/conf.d/`
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-If you encounter any issues or have questions, please open an issue on GitHub.
-
-## Acknowledgments
-
-- Django community for the excellent web framework
-- Contributors and users of this project
+**Return** [↑](#ai-resume-advisor)
